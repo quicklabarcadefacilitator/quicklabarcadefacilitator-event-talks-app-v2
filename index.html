@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Talks Event Schedule</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .search-container {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        #categorySearch {
+            width: 70%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+        #categorySearch::placeholder {
+            color: #aaa;
+        }
+        .schedule-entry {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 15px;
+            padding: 20px;
+            border-radius: 8px;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            cursor: pointer;
+            position: relative;
+        }
+        .schedule-entry:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+        .schedule-entry.talk {
+            border-left: 5px solid #3498db;
+        }
+        .schedule-entry.lunch {
+            border-left: 5px solid #2ecc71;
+            background-color: #e8f9ed;
+            color: #27ae60;
+        }
+        .schedule-entry h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        .schedule-entry.lunch h3 {
+            color: #27ae60;
+        }
+        .schedule-entry p {
+            margin: 5px 0;
+            color: #555;
+        }
+        .schedule-entry .time {
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 10px;
+            display: block;
+            font-size: 0.95em;
+        }
+        .schedule-entry.lunch .time {
+            color: #27ae60;
+        }
+        .speakers, .categories {
+            font-size: 0.9em;
+            color: #777;
+            margin-top: 10px;
+        }
+        .speaker-tag, .category-tag {
+            display: inline-block;
+            background-color: #eee;
+            color: #555;
+            padding: 4px 8px;
+            border-radius: 3px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            white-space: nowrap;
+        }
+        .schedule-entry.talk .description {
+            margin-top: 15px;
+            border-top: 1px dashed #e0e0e0;
+            padding-top: 15px;
+            color: #444;
+            display: none; /* Hidden by default */
+        }
+        .schedule-entry.talk.expanded .description {
+            display: block; /* Show when expanded */
+        }
+        .no-results {
+            text-align: center;
+            color: #999;
+            font-size: 1.2em;
+            padding: 30px;
+            border: 1px dashed #ddd;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tech Talks Event Schedule</h1>
+
+        <div class="search-container">
+            <input type="text" id="categorySearch" placeholder="Search talks by category (e.g., Frontend, AI)">
+        </div>
+
+        <div id="schedule">
+            <!-- Schedule entries will be injected here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const talksData = [
+            {
+                id: 'talk1',
+                title: 'Introduction to Modern Web Development',
+                speakers: ['Alice Wonderland'],
+                category: ['Web Development', 'Frontend'],
+                duration: 60,
+                description: 'A dive into the latest trends and tools in web development, covering frameworks like React, Vue, and Angular, and the importance of performance optimization.'
+            },
+            {
+                id: 'talk2',
+                title: 'Demystifying Cloud Native Architectures',
+                speakers: ['Bob The Builder'],
+                category: ['Cloud', 'DevOps', 'Architecture'],
+                duration: 60,
+                description: 'Understanding the core principles of cloud-native applications, including containers, microservices, and orchestration with Kubernetes.'
+            },
+            {
+                id: 'talk3',
+                title: 'Machine Learning in JavaScript',
+                speakers: ['Charlie Chaplin'],
+                category: ['Machine Learning', 'JavaScript'],
+                duration: 60,
+                description: 'Exploring the possibilities of integrating machine learning models directly into your web applications using TensorFlow.js and other libraries.'
+            },
+            {
+                id: 'lunch',
+                title: 'Lunch Break',
+                speakers: [],
+                category: [],
+                duration: 60,
+                description: 'Enjoy a delicious lunch and network with fellow attendees!'
+            },
+            {
+                id: 'talk4',
+                title: 'Secure Coding Practices for Developers',
+                speakers: ['Diana Prince'],
+                category: ['Security', 'Best Practices'],
+                duration: 60,
+                description: 'Learn essential security practices to protect your applications from common vulnerabilities and threats.'
+            },
+            {
+                id: 'talk5',
+                title: 'Advanced CSS Techniques',
+                speakers: ['Eve Arden'],
+                category: ['Frontend', 'CSS', 'Design'],
+                duration: 60,
+                description: 'Unleash the full power of CSS with advanced layouts, animations, and responsive design patterns.'
+            },
+            {
+                id: 'talk6',
+                title: 'The Future of AI in Software Engineering',
+                speakers: ['Frankenstein'],
+                category: ['AI', 'Future Tech', 'Software Engineering'],
+                duration: 60,
+                description: 'A look into how artificial intelligence is transforming the software development lifecycle, from code generation to automated testing.'
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const scheduleDiv = document.getElementById('schedule');
+            const searchInput = document.getElementById('categorySearch');
+            const eventStartTime = new Date();
+            eventStartTime.setHours(10, 0, 0, 0); // Event starts at 10:00 AM
+
+            let currentSchedule = []; // To store the schedule with calculated times
+
+            function formatTime(date) {
+                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+
+            function generateSchedule() {
+                let currentTime = new Date(eventStartTime);
+                currentSchedule = [];
+
+                talksData.forEach(item => {
+                    const entryStartTime = new Date(currentTime);
+                    const entryEndTime = new Date(currentTime.getTime() + item.duration * 60 * 1000);
+
+                    currentSchedule.push({
+                        ...item,
+                        startTime: entryStartTime,
+                        endTime: entryEndTime
+                    });
+
+                    currentTime = new Date(entryEndTime);
+
+                    // Add transition time if it's a talk and not the last item or lunch
+                    if (item.id !== 'lunch' && talksData.indexOf(item) < talksData.length - 1) {
+                        currentTime = new Date(currentTime.getTime() + 10 * 60 * 1000); // 10 minute transition
+                    } else if (item.id === 'lunch' && talksData.indexOf(item) < talksData.length - 1) {
+                         // Add transition after lunch for the next talk (if any)
+                         currentTime = new Date(currentTime.getTime() + 10 * 60 * 1000);
+                    }
+                });
+                renderSchedule(currentSchedule);
+            }
+
+            function renderSchedule(filteredItems) {
+                scheduleDiv.innerHTML = ''; // Clear previous entries
+                if (filteredItems.length === 0) {
+                    scheduleDiv.innerHTML = '<div class="no-results">No talks found matching your search.</div>';
+                    return;
+                }
+
+                filteredItems.forEach(item => {
+                    const entryDiv = document.createElement('div');
+                    entryDiv.classList.add('schedule-entry');
+                    entryDiv.classList.add(item.id === 'lunch' ? 'lunch' : 'talk');
+
+                    const timeSpan = `<span class="time">${formatTime(item.startTime)} - ${formatTime(item.endTime)}</span>`;
+                    entryDiv.innerHTML = `
+                        ${timeSpan}
+                        <h3>${item.title}</h3>
+                        ${item.speakers.length > 0 ? `<p class="speakers">Speakers: ${item.speakers.map(s => `<span class="speaker-tag">${s}</span>`).join('')}</p>` : ''}
+                        ${item.category.length > 0 ? `<p class="categories">Categories: ${item.category.map(c => `<span class="category-tag">${c}</span>`).join('')}</p>` : ''}
+                        ${item.description ? `<div class="description"><p>${item.description}</p></div>` : ''}
+                    `;
+
+                    if (item.id !== 'lunch') {
+                        entryDiv.addEventListener('click', () => {
+                            entryDiv.classList.toggle('expanded');
+                        });
+                    }
+                    scheduleDiv.appendChild(entryDiv);
+                });
+            }
+
+            function filterSchedule(searchTerm) {
+                const lowerCaseSearchTerm = searchTerm.toLowerCase();
+                const filtered = currentSchedule.filter(item => {
+                    if (item.id === 'lunch') return true; // Always show lunch
+                    return item.category.some(cat => cat.toLowerCase().includes(lowerCaseSearchTerm));
+                });
+                renderSchedule(filtered);
+            }
+
+            searchInput.addEventListener('input', (event) => {
+                filterSchedule(event.target.value);
+            });
+
+            // Initial generation of the schedule
+            generateSchedule();
+        });
+    </script>
+</body>
+</html>
